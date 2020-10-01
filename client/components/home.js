@@ -1,18 +1,29 @@
 import React, { useState } from 'react'
+// import { Route } from 'react-router-dom'
 import Head from './head'
-// import wave from '../assets/images/wave.jpg'
+import Main from './main'
+import Repositories from './repositories'
+import Repository from './repository'
 
 const Home = () => {
-  const [counter, setCounterNew] = useState(0)
+
+  const [username, setUsername] = useState(null)
+  const url = username ? `https://api.github.com/users/${username}/repos` : null
 
   return (
-    <div>
+    <div className="flex flex-row w-full h-full">
       <Head title="Hello" />
-      <img alt="wave" src="images/wave.jpg" />
-      <button type="button" onClick={() => setCounterNew(counter + 1)}>
-        updateCounter
-      </button>
-      <div> Hello World Dashboard {counter} </div>
+      <div className="flex flex-col h-screen w-1/3">
+        <div className="flex w-full h-48 border-2 border-black">
+          <Main setUsername={setUsername}/>
+        </div>
+        <div className="flex w-full flex-grow border-2 border-black">
+          <Repositories url={url} username={username}/>
+        </div>
+      </div>
+      <div>
+        <Repository />
+      </div>
     </div>
   )
 }
