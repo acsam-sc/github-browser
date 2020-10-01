@@ -10,12 +10,17 @@ const Home = () => {
   const [repoUrl, setRepoUrl] = useState(null)
   const url = username ? `https://api.github.com/users/${username}/repos` : null
 
+  const onSetUsername = (input) => {
+    setRepoUrl(null)
+    setUsername(input)
+  }
+
   return (
     <div className="flex flex-row w-full min-h-full">
       <Head title="Hello" />
       <div className="flex flex-col h-screen w-1/3">
         <div className="flex w-full h-48 border-2 border-black">
-          <Main setUsername={setUsername} />
+          <Main onSetUsername={onSetUsername} />
         </div>
         <div className="flex w-full flex-grow border-2 border-black">
           <Repositories url={url} username={username} setRepoUrl={setRepoUrl} />

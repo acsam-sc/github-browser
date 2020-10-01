@@ -2,25 +2,29 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import ReactMarkdown from 'react-markdown'
 
-const Repository = (props) => {
+const Repository = ({ repoUrl }) => {
   const [readmeUrl, setReadmeUrl] = useState(null)
   const [readmeContent, setReadmeContent] = useState(null)
-  const [getError, setGetError] = useState(null)
+  // const [getError, setGetError] = useState(null)
   const [errorText, setErrorText] = useState(null)
 
   useEffect(() => {
+    setErrorText(null)
+    setReadmeContent(null)
     const getReadmeUrl = async () => {
       try {
-        const reqUrl = `${props.repoUrl}/readme`
-        const response = await axios.get(reqUrl)
+        const response = await axios.get(`${repoUrl}/readme`)
         setReadmeUrl(response.data.download_url)
       } catch (err) {
-        setGetError(err.response.status)
+        if (err.response.status === 404) {
+          setErrorText('This repository does not have a README.MD')
+        } else {
+          setErrorText(err.message)
+        }
       }
     }
-    if (props.repoUrl) getReadmeUrl()
-    setGetError(null)
-  }, [props.repoUrl])
+    if (repoUrl) getReadmeUrl()
+  }, [repoUrl])
 
   useEffect(() => {
     const getReadmeContent = async () => {
@@ -28,23 +32,23 @@ const Repository = (props) => {
         const response = await axios.get(readmeUrl)
         setReadmeContent(response.data)
       } catch (err) {
-        setGetError(err.message)
+        setErrorText(err.message)
       }
     }
     if (readmeUrl) getReadmeContent()
   }, [readmeUrl])
 
-  useEffect(() => {
-    if (getError === 404) setErrorText('This repository does not have a README.MD')
-  }, [getError])
+  // useEffect(() => {
+  //   if (getError === 404) setErrorText('This repository does not have a README.MD')
+  // }, [getError])
 
   return (
     <div>
       <div className="p-2">
-        <b>Repository:</b> {props.repoUrl}
+        <b>Repository:</b> {repoUrl}
       </div>
       <div className="p-2">
-        {getError ? (
+        {errorText ? (
           <div className="text-red-600 font-bold">{errorText}</div>
         ) : (
           readmeUrl && <ReactMarkdown source={readmeContent} />

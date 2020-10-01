@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Main = (props) => {
+const Main = ({ onSetUsername }) => {
   const [inputValue, setInputValue] = useState('')
   const handleInputChange = (e) => {
     setInputValue(e.target.value)
@@ -8,8 +8,7 @@ const Main = (props) => {
 
   const onSubmit = (e) => {
     e.preventDefault()
-    // console.log(url)
-    props.setUsername(inputValue)
+    onSetUsername(inputValue)
   }
 
   return (
