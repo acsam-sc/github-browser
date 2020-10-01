@@ -8,31 +8,29 @@ const Repository = (props) => {
   const [getError, setGetError] = useState(null)
   const [errorText, setErrorText] = useState(null)
 
-  const getReadmeUrl = async () => {
-    try {
-      const reqUrl = `${props.repoUrl}/readme`
-      const response = await axios.get(reqUrl)
-      setReadmeUrl(response.data.download_url)
-    } catch (err) {
-      setGetError(err.response.status)
-    }
-  }
-
-  const getReadmeContent = async () => {
-    try {
-      const response = await axios.get(readmeUrl)
-      setReadmeContent(response.data)
-    } catch (err) {
-      setGetError(err.message)
-    }
-  }
-
   useEffect(() => {
+    const getReadmeUrl = async () => {
+      try {
+        const reqUrl = `${props.repoUrl}/readme`
+        const response = await axios.get(reqUrl)
+        setReadmeUrl(response.data.download_url)
+      } catch (err) {
+        setGetError(err.response.status)
+      }
+    }
     if (props.repoUrl) getReadmeUrl()
     setGetError(null)
   }, [props.repoUrl])
 
   useEffect(() => {
+    const getReadmeContent = async () => {
+      try {
+        const response = await axios.get(readmeUrl)
+        setReadmeContent(response.data)
+      } catch (err) {
+        setGetError(err.message)
+      }
+    }
     if (readmeUrl) getReadmeContent()
   }, [readmeUrl])
 

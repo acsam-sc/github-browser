@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react'
-// import { Link } from 'react-router-dom'
 import axios from 'axios'
 
 const Repositories = (props) => {
   const [reposArray, setReposArray] = useState([])
-  const getRepositories = async () => {
-    try {
-      const response = await axios.get(props.url)
-      setReposArray(response.data)
-    } catch (err) {
-      console.error('Error occured', err.message)
-    }
-  }
-
   useEffect(() => {
+    setReposArray([])
+    const getRepositories = async () => {
+      try {
+        const response = await axios.get(props.url)
+        setReposArray(response.data)
+      } catch (err) {
+        console.error('Error occured', err.message)
+      }
+    }
     if (props.url) getRepositories()
   }, [props.url])
 
