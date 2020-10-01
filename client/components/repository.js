@@ -5,7 +5,6 @@ import ReactMarkdown from 'react-markdown'
 const Repository = ({ repoUrl }) => {
   const [readmeUrl, setReadmeUrl] = useState(null)
   const [readmeContent, setReadmeContent] = useState(null)
-  // const [getError, setGetError] = useState(null)
   const [errorText, setErrorText] = useState(null)
 
   useEffect(() => {
@@ -37,10 +36,6 @@ const Repository = ({ repoUrl }) => {
     }
     if (readmeUrl) getReadmeContent()
   }, [readmeUrl])
-
-  // useEffect(() => {
-  //   if (getError === 404) setErrorText('This repository does not have a README.MD')
-  // }, [getError])
 
   return (
     <div>

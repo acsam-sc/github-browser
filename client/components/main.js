@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Main = ({ onSetUsername }) => {
+const Main = ({ onSetUsername, usernameError }) => {
   const [inputValue, setInputValue] = useState('')
   const handleInputChange = (e) => {
     setInputValue(e.target.value)
@@ -26,6 +26,9 @@ const Main = ({ onSetUsername }) => {
           <button className="bg-gray-500 m-1" type="submit">
             Search
           </button>
+          { usernameError && (
+              <div className="text-red-600 font-bold">{usernameError}</div>
+          )}
         </form>
       </div>
     </div>

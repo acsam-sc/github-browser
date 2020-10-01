@@ -1,10 +1,10 @@
-# SkillCrucial React Redux boilerplate
+# Simple GitHub Browser of README.MDs
 
 ## Quick start
 
 1. Clone this repo using:
   ```shell
-  $ git clone git@github.com:ovasylenko/skillcrucial-react-redux-boilerplate.git
+  $ git clone git@github.com:acsam-sc/github-browser.git
   ```
 
 2. To install dependencies and clean the git repo run:
@@ -73,13 +73,13 @@ Installs the dependencies.
 yarn run dev
 ```
 
-Starts the development server running on `http://localhost:8080` using the webpack.development.config.js with Hot Module Replacement (HMR) (Changes in the application code will be hot-reloaded)
+Starts the development server running on `http://localhost:8087` using the webpack.development.config.js with Hot Module Replacement (HMR) (Changes in the application code will be hot-reloaded)
 
 ```Shell
 yarn run dev:server
 ```
 
-Starts the development server and makes your application accessible at http://localhost:8080.
+Starts the development server and makes your application accessible at http://localhost:8087.
 
 ```Shell
 yarn run clean

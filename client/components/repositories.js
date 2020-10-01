@@ -1,22 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import React from 'react'
 
 const Repositories = (props) => {
-  const [reposArray, setReposArray] = useState([])
-  useEffect(() => {
-    setReposArray([])
-    const getRepositories = async () => {
-      try {
-        const response = await axios.get(props.url)
-        setReposArray(response.data)
-      } catch (err) {
-        console.error('Error occured', err.message)
-      }
-    }
-    if (props.url) getRepositories()
-  }, [props.url])
 
-  const urlList = reposArray.map((it) => {
+  const urlList = props.reposArray.map((it) => {
     return (
       <div
         key={it.id}
@@ -32,7 +18,7 @@ const Repositories = (props) => {
 
   return (
     <div>
-      {props.username && (
+      {(props.reposArray.length !== 0) && !props.usernameError && (
         <div className="p-3 font-semibold">{props.username}&apos;s repositories:</div>
       )}
       <div className="p-2">{urlList}</div>
