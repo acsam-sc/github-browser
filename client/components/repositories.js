@@ -3,30 +3,42 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
 const Repositories = (props) => {
-
   const [reposArray, setReposArray] = useState([])
-
   const getRepositories = async () => {
-    const response = await axios.get(props.url)
-    setReposArray(response.data)
-    console.log('getRepositories', response.data)
+    try {
+      const response = await axios.get(props.url)
+      setReposArray(response.data)
+    } catch (err) {
+      console.error('Error occured', err.message)
+    }
   }
 
   useEffect(() => {
-    if (props.url) getRepositories(props.url)
-  }, [props.url]) 
+    if (props.url) getRepositories()
+  }, [props.url])
 
-  const urlList = reposArray.map(it => {
-    // return <li key={it.id}><Link to={it.url}>{it.name}</Link></li>
-  return <li key={it.id}>{it.name}</li>
+  const urlList = reposArray.map((it) => {
+    return (
+      <div
+        key={it.id}
+        onClick={() => props.setRepoUrl(it.url)}
+        onKeyDown={() => props.setRepoUrl(it.url)}
+        tabIndex="0"
+        role="link"
+      >
+        {it.name}
+      </div>
+    )
   })
 
-  return <div>
-    {props.username && <div className="p-3 font-semibold">{props.username}&apos;s repositories:</div>}
-    <ul className="p-2">
-      { urlList }
-    </ul>
-  </div>
+  return (
+    <div>
+      {props.username && (
+        <div className="p-3 font-semibold">{props.username}&apos;s repositories:</div>
+      )}
+      <div className="p-2">{urlList}</div>
+    </div>
+  )
 }
 
 export default Repositories
