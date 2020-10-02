@@ -1,44 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import React from 'react'
 import ReactMarkdown from 'react-markdown'
 
-const Repository = ({ errorText, setErrorText, repoUrl }) => {
-  const [readmeUrl, setReadmeUrl] = useState(null)
-  const [readmeContent, setReadmeContent] = useState(null)
-  const [hasNoReadme, setHasNoReadme] = useState(null)
-
-  useEffect(() => {
-    setErrorText(null)
-    setReadmeUrl(null)
-    setReadmeContent(null)
-    setHasNoReadme(null)
-    const getReadmeUrl = async () => {
-      try {
-        const response = await axios.get(`${repoUrl}/readme`)
-        setReadmeUrl(response.data.download_url)
-      } catch (err) {
-        if (err.response.status === 404) {
-          setHasNoReadme('This repository does not have a README.MD')
-        } else {
-          setErrorText(err.response.data.message)
-        }
-      }
-    }
-    if (repoUrl) getReadmeUrl()
-  }, [repoUrl])
-
-  useEffect(() => {
-    const getReadmeContent = async () => {
-      try {
-        const response = await axios.get(readmeUrl)
-        setReadmeContent(response.data)
-      } catch (err) {
-        setErrorText(err.response.data.message)
-      }
-    }
-    if (readmeUrl) getReadmeContent()
-  }, [readmeUrl])
-
+const Repository = ({ errorText, hasNoReadme, repoUrl, readmeContent, readmeUrl }) => {
   return (
     <div>
       {errorText && (

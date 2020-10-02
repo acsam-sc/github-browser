@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Main = ({ setUsername, usernameError }) => {
+const Main = ({ setUsername, setUsernameError, usernameError }) => {
   const [inputValue, setInputValue] = useState('')
   const handleInputChange = (e) => {
     setInputValue(e.target.value)
@@ -8,7 +8,9 @@ const Main = ({ setUsername, usernameError }) => {
 
   const onSubmit = (e) => {
     e.preventDefault()
-    setUsername(inputValue)
+    if (inputValue.length === 0) {
+      setUsernameError('Please enter username')
+    } else setUsername(inputValue)
   }
 
   return (

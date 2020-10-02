@@ -1,12 +1,12 @@
 import React from 'react'
 
-const Repositories = (props) => {
-  const urlList = props.reposArray.map((it) => {
+const Repositories = ({ setRepoUrl, username, reposError, reposArray }) => {
+  const urlList = reposArray.map((it) => {
     return (
       <div
         key={it.id}
-        onClick={() => props.setRepoUrl(it.url)}
-        onKeyDown={() => props.setRepoUrl(it.url)}
+        onClick={() => setRepoUrl(it.url)}
+        onKeyDown={() => setRepoUrl(it.url)}
         tabIndex="0"
         role="link"
       >
@@ -17,9 +17,9 @@ const Repositories = (props) => {
 
   return (
     <div>
-      {props.reposError && <div className="text-red-600 font-bold">{props.reposError}</div>}
-      {props.reposArray.length !== 0 && (
-        <div className="p-3 font-semibold">{props.username}&apos;s repositories:</div>
+      {reposError && <div className="text-red-600 font-bold">{reposError}</div>}
+      {reposArray.length !== 0 && (
+        <div className="p-3 font-semibold">{username}&apos;s repositories:</div>
       )}
       <div className="p-2">{urlList}</div>
     </div>
