@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
 import axios from 'axios'
 // import { Route } from 'react-router-dom'
 import Head from './head'
 import Main from './main'
 import Repositories from './repositories'
 import Repository from './repository'
+import { setUsername, setRepoUrl } from '../redux/reducers/user-reducer'
 
-const Home = () => {
-  const [username, setUsername] = useState(null)
-  const [repoUrl, setRepoUrl] = useState(null)
+const Home = (props) => {
+  console.log('Home props', props)
   const [usernameError, setUsernameError] = useState(null)
   const [reposArray, setReposArray] = useState([])
   const [reposError, setReposError] = useState(null)
@@ -33,13 +34,13 @@ const Home = () => {
 
   useEffect(() => {
     resetUsernameState()
-    const url = username ? `https://api.github.com/users/${username}/repos` : null
+    const url = props.username ? `https://api.github.com/users/${props.username}/repos` : null
     const getRepositories = async () => {
       try {
         const response = await axios.get(url)
         // setErrorText(response.data[0].url)
         if (response.data.length === 0) {
-          setReposError(`${username} doesn’t have any public repositories yet`)
+          setReposError(`${props.username} doesn’t have any public repositories yet`)
         } else {
           setReposArray(response.data)
         }
@@ -53,13 +54,13 @@ const Home = () => {
       }
     }
     if (url) getRepositories()
-  }, [username])
+  }, [props.username])
 
   useEffect(() => {
     resetRepoState()
     const getReadmeUrl = async () => {
       try {
-        const response = await axios.get(`${repoUrl}/readme`)
+        const response = await axios.get(`${props.repoUrl}/readme`)
         setReadmeUrl(response.data.download_url)
       } catch (err) {
         if (err.response.status === 404) {
@@ -69,8 +70,8 @@ const Home = () => {
         }
       }
     }
-    if (repoUrl) getReadmeUrl()
-  }, [repoUrl])
+    if (props.repoUrl) getReadmeUrl()
+  }, [props.repoUrl])
 
   useEffect(() => {
     const getReadmeContent = async () => {
@@ -90,7 +91,7 @@ const Home = () => {
       <div className="flex flex-col h-screen w-1/3">
         <div className="flex w-full h-48 border-2 border-black">
           <Main
-            setUsername={setUsername}
+            setUsername={props.setUsername}
             setUsernameError={setUsernameError}
             usernameError={usernameError}
           />
@@ -98,15 +99,15 @@ const Home = () => {
         <div className="flex w-full flex-grow border-2 border-black">
           <Repositories
             reposArray={reposArray}
-            username={username}
-            setRepoUrl={setRepoUrl}
+            username={props.username}
+            setRepoUrl={props.setRepoUrl}
             reposError={reposError}
           />
         </div>
       </div>
       <div className="w-full">
         <Repository
-          repoUrl={repoUrl}
+          repoUrl={props.repoUrl}
           errorText={errorText}
           hasNoReadme={hasNoReadme}
           readmeContent={readmeContent}
@@ -119,4 +120,17 @@ const Home = () => {
 
 Home.propTypes = {}
 
-export default Home
+const mapStateToProps = (state) => {
+  // console.log('state', state)
+  return ({
+    username: state.userReducer.username,
+    repoUrl: state.userReducer.repoUrl
+  })
+}
+
+const mapDispatchToProps = {
+  setUsername,
+  setRepoUrl
+}
+
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(Home))
