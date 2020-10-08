@@ -19,7 +19,7 @@ const Repositories = ({ setRepoUrl, username, reposError, reposArray }) => {
     <div>
       {reposError && <div className="text-red-600 font-bold">{reposError}</div>}
       {reposArray.length !== 0 && (
-        <div className="p-3 font-semibold">{username}&apos;s repositories:</div>
+        <div className="p-3 font-semibold">{username}&#39;s repositories:</div>
       )}
       <div className="p-2">{urlList}</div>
     </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Main = ({ setUsername, setUsernameError, usernameError }) => {
+const Main = ({ username, onUserFormSubmit, usernameError }) => {
   const [inputValue, setInputValue] = useState('')
   const handleInputChange = (e) => {
     setInputValue(e.target.value)
@@ -8,14 +8,12 @@ const Main = ({ setUsername, setUsernameError, usernameError }) => {
 
   const onSubmit = (e) => {
     e.preventDefault()
-    if (inputValue.length === 0) {
-      setUsernameError('Please enter username')
-    } else setUsername(inputValue)
+    onUserFormSubmit(inputValue, username)
   }
 
   return (
     <div className="m-10">
-      Welcome to GitHub Browser
+      Welcome to GitHub README&#39;s Browser
       <div>
         <form onSubmit={onSubmit}>
           <input
@@ -35,4 +33,4 @@ const Main = ({ setUsername, setUsernameError, usernameError }) => {
   )
 }
 
-export default Main
+export default React.memo(Main)

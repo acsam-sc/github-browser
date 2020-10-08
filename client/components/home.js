@@ -6,52 +6,18 @@ import Head from './head'
 import Main from './main'
 import Repositories from './repositories'
 import Repository from './repository'
-import { setUsername, setRepoUrl, setUsernameError, setReposArray, setReposError } from '../redux/reducers/user-reducer'
-import { setReadmeUrl, setReadmeContent, setHasNoReadme, setErrorText } from '../redux/reducers/repo-reducer'
+import { setRepoUrl, setReposArray, setReposError, getRepositories, onUserFormSubmit } from '../redux/reducers/user-reducer'
+import { setReadmeUrl, setReadmeContent, setHasNoReadme, setErrorText, resetRepoState } from '../redux/reducers/repo-reducer'
 
 const Home = (props) => {
   console.log('Home props', props)
 
-  const resetUsernameState = () => {
-    props.setRepoUrl(null)
-    props.setUsernameError(null)
-    props.setReposArray([])
-    props.setReposError(null)
-  }
-
-  const resetRepoState = () => {
-    props.setErrorText(null)
-    props.setReadmeUrl(null)
-    props.setReadmeContent(null)
-    props.setHasNoReadme(null)
-  }
-
   useEffect(() => {
-    resetUsernameState()
-    const url = props.username ? `https://api.github.com/users/${props.username}/repos` : null
-    const getRepositories = async () => {
-      try {
-        const response = await axios.get(url)
-        // setErrorText(response.data[0].url)
-        if (response.data.length === 0) {
-          props.setReposError(`${props.username} doesn’t have any public repositories yet`)
-        } else {
-          props.setReposArray(response.data)
-        }
-      } catch (err) {
-        // console.log(err.response.data.message)
-        if (err.response.status === 404) {
-          props.setUsernameError('No such user')
-        } else {
-          props.setErrorText(err.response.data.message)
-        }
-      }
-    }
-    if (url) getRepositories()
+    if (props.username) props.getRepositories(props.username)
   }, [props.username])
 
   useEffect(() => {
-    resetRepoState()
+    props.resetRepoState()
     const getReadmeUrl = async () => {
       try {
         const response = await axios.get(`${props.repoUrl}/readme`)
@@ -85,8 +51,7 @@ const Home = (props) => {
       <div className="flex flex-col h-screen w-1/3">
         <div className="flex w-full h-48 border-2 border-black">
           <Main
-            setUsername={props.setUsername}
-            setUsernameError={props.setUsernameError}
+            onUserFormSubmit={props.onUserFormSubmit}
             usernameError={props.usernameError}
           />
         </div>
@@ -130,15 +95,16 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = {
-  setUsername,
   setRepoUrl,
-  setUsernameError,
   setReposArray,
   setReposError,
   setReadmeUrl,
   setReadmeContent,
   setHasNoReadme,
-  setErrorText
+  setErrorText,
+  resetRepoState,
+  getRepositories,
+  onUserFormSubmit
 }
 
 export default React.memo(connect(mapStateToProps, mapDispatchToProps)(Home))
