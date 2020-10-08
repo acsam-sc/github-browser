@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
 // import { Route } from 'react-router-dom'
@@ -6,30 +6,24 @@ import Head from './head'
 import Main from './main'
 import Repositories from './repositories'
 import Repository from './repository'
-import { setUsername, setRepoUrl } from '../redux/reducers/user-reducer'
+import { setUsername, setRepoUrl, setUsernameError, setReposArray, setReposError } from '../redux/reducers/user-reducer'
+import { setReadmeUrl, setReadmeContent, setHasNoReadme, setErrorText } from '../redux/reducers/repo-reducer'
 
 const Home = (props) => {
   console.log('Home props', props)
-  const [usernameError, setUsernameError] = useState(null)
-  const [reposArray, setReposArray] = useState([])
-  const [reposError, setReposError] = useState(null)
-  const [errorText, setErrorText] = useState(null)
-  const [readmeUrl, setReadmeUrl] = useState(null)
-  const [readmeContent, setReadmeContent] = useState(null)
-  const [hasNoReadme, setHasNoReadme] = useState(null)
 
   const resetUsernameState = () => {
-    setRepoUrl(null)
-    setUsernameError(null)
-    setReposArray([])
-    setReposError(null)
+    props.setRepoUrl(null)
+    props.setUsernameError(null)
+    props.setReposArray([])
+    props.setReposError(null)
   }
 
   const resetRepoState = () => {
-    setErrorText(null)
-    setReadmeUrl(null)
-    setReadmeContent(null)
-    setHasNoReadme(null)
+    props.setErrorText(null)
+    props.setReadmeUrl(null)
+    props.setReadmeContent(null)
+    props.setHasNoReadme(null)
   }
 
   useEffect(() => {
@@ -40,16 +34,16 @@ const Home = (props) => {
         const response = await axios.get(url)
         // setErrorText(response.data[0].url)
         if (response.data.length === 0) {
-          setReposError(`${props.username} doesn’t have any public repositories yet`)
+          props.setReposError(`${props.username} doesn’t have any public repositories yet`)
         } else {
-          setReposArray(response.data)
+          props.setReposArray(response.data)
         }
       } catch (err) {
         // console.log(err.response.data.message)
         if (err.response.status === 404) {
-          setUsernameError('No such user')
+          props.setUsernameError('No such user')
         } else {
-          setErrorText(err.response.data.message)
+          props.setErrorText(err.response.data.message)
         }
       }
     }
@@ -61,12 +55,12 @@ const Home = (props) => {
     const getReadmeUrl = async () => {
       try {
         const response = await axios.get(`${props.repoUrl}/readme`)
-        setReadmeUrl(response.data.download_url)
+        props.setReadmeUrl(response.data.download_url)
       } catch (err) {
         if (err.response.status === 404) {
-          setHasNoReadme('This repository doesn’t have a README.MD')
+          props.setHasNoReadme('This repository doesn’t have a README.MD')
         } else {
-          setErrorText(err.response.data.message)
+          props.setErrorText(err.response.data.message)
         }
       }
     }
@@ -76,14 +70,14 @@ const Home = (props) => {
   useEffect(() => {
     const getReadmeContent = async () => {
       try {
-        const response = await axios.get(readmeUrl)
-        setReadmeContent(response.data)
+        const response = await axios.get(props.readmeUrl)
+        props.setReadmeContent(response.data)
       } catch (err) {
-        setErrorText(err.response.data.message)
+        props.setErrorText(err.response.data.message)
       }
     }
-    if (readmeUrl) getReadmeContent()
-  }, [readmeUrl])
+    if (props.readmeUrl) getReadmeContent()
+  }, [props.readmeUrl])
 
   return (
     <div className="flex flex-row w-full min-h-full">
@@ -92,26 +86,26 @@ const Home = (props) => {
         <div className="flex w-full h-48 border-2 border-black">
           <Main
             setUsername={props.setUsername}
-            setUsernameError={setUsernameError}
-            usernameError={usernameError}
+            setUsernameError={props.setUsernameError}
+            usernameError={props.usernameError}
           />
         </div>
         <div className="flex w-full flex-grow border-2 border-black">
           <Repositories
-            reposArray={reposArray}
+            reposArray={props.reposArray}
             username={props.username}
             setRepoUrl={props.setRepoUrl}
-            reposError={reposError}
+            reposError={props.reposError}
           />
         </div>
       </div>
       <div className="w-full">
         <Repository
           repoUrl={props.repoUrl}
-          errorText={errorText}
-          hasNoReadme={hasNoReadme}
-          readmeContent={readmeContent}
-          readmeUrl={readmeUrl}
+          errorText={props.errorText}
+          hasNoReadme={props.hasNoReadme}
+          readmeContent={props.readmeContent}
+          readmeUrl={props.readmeUrl}
         />
       </div>
     </div>
@@ -122,15 +116,29 @@ Home.propTypes = {}
 
 const mapStateToProps = (state) => {
   // console.log('state', state)
-  return ({
+  return {
     username: state.userReducer.username,
-    repoUrl: state.userReducer.repoUrl
-  })
+    repoUrl: state.userReducer.repoUrl,
+    usernameError: state.userReducer.usernameError,
+    reposArray: state.userReducer.reposArray,
+    reposError: state.userReducer.reposError,
+    readmeUrl: state.repoReducer.readmeUrl,
+    readmeContent: state.repoReducer.readmeContent,
+    hasNoReadme: state.repoReducer.hasNoReadme,
+    errorText: state.repoReducer.errorText
+  }
 }
 
 const mapDispatchToProps = {
   setUsername,
-  setRepoUrl
+  setRepoUrl,
+  setUsernameError,
+  setReposArray,
+  setReposError,
+  setReadmeUrl,
+  setReadmeContent,
+  setHasNoReadme,
+  setErrorText
 }
 
 export default React.memo(connect(mapStateToProps, mapDispatchToProps)(Home))
