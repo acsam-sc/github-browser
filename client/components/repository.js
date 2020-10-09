@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactMarkdown from 'react-markdown'
 
-const Repository = ({ errorText, hasNoReadme, repoUrl, readmeContent, readmeUrl }) => {
+const Repository = ({ errorText, hasNoReadme, repoUrl, readmeContent }) => {
   return (
     <div>
       {errorText && (
@@ -15,7 +15,7 @@ const Repository = ({ errorText, hasNoReadme, repoUrl, readmeContent, readmeUrl 
           <div className="text-red-600 font-bold p-2">{hasNoReadme}</div>
         </div>
       )}
-      {readmeUrl && (
+      {readmeContent && (
         <div className="p-2">
           <b>Repository:</b> {repoUrl}
           <div className="p-2">

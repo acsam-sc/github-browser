@@ -1,14 +1,14 @@
-import axios from 'axios'
+import { requestRepos } from '../../api/api'
 
 const SET_USERNAME = 'github-browser/SET_USERNAME'
+const SET_REPO_URL = 'github-browser/SET_REPO_URL'
 const SET_USERNAME_ERROR = 'github-browser/SET_USERNAME_ERROR'
-const SET_REPO_URL = 'github-browser/SET_SET_REPO_URL'
 const SET_REPOS_ARRAY = 'github-browser/SET_REPOS_ARRAY'
 const SET_REPOS_ERROR = 'github-browser/SET_REPOS_ERROR'
 const SET_ERROR_TEXT = 'github-browser/SET_ERROR_TEXT'
 
 const initialState = {
-  username: null,
+  username: '',
   usernameError: null,
   repoUrl: null,
   reposArray: [],
@@ -17,12 +17,12 @@ const initialState = {
 
 export const setUsername = (username) => ({ type: SET_USERNAME, payload: username })
 
-export const setRepoUrl = (repoUrl) => {
-  return { type: SET_REPO_URL, payload: repoUrl }
-}
-
 export const setUsernameError = (usernameError) => {
   return { type: SET_USERNAME_ERROR, payload: usernameError }
+}
+
+export const setRepoUrl = (repoUrl) => {
+  return { type: SET_REPO_URL, payload: repoUrl }
 }
 
 export const setReposArray = (reposArray) => {
@@ -49,11 +49,11 @@ const userReducer = (state = initialState, action) => {
         username: action.payload
       }
     }
-    case SET_USERNAME_ERROR: {
-      return { ...state, usernameError: action.payload }
-    }
     case SET_REPO_URL: {
       return { ...state, repoUrl: action.payload }
+    }
+    case SET_USERNAME_ERROR: {
+      return { ...state, usernameError: action.payload }
     }
     case SET_REPOS_ARRAY: {
       return { ...state, reposArray: action.payload }
@@ -70,9 +70,8 @@ const userReducer = (state = initialState, action) => {
 }
 
 export const getRepositories = (username) => async (dispatch) => {
-  const url = `https://api.github.com/users/${username}/repos`
   try {
-    const response = await axios.get(url)
+    const response = await requestRepos(username)
     // setErrorText(response.data[0].url)
     if (response.data.length === 0) {
       dispatch(setReposError(`${username} doesn’t have any public repositories yet`))
@@ -88,11 +87,12 @@ export const getRepositories = (username) => async (dispatch) => {
   }
 }
 
-export const onUserFormSubmit = (inputValue, username) => (dispatch) => {
+export const onUserFormSubmit = (inputValue) => (dispatch) => {
   if (inputValue.length === 0) {
-    dispatch(setUsername(null))
+    dispatch(setUsername(''))
     dispatch(setUsernameError('Please enter username'))
-  } else if (inputValue !== username) dispatch(setUsername(inputValue))
+  // } else if (inputValue !== username) dispatch(setUsername(inputValue))
+  } else dispatch(setUsername(inputValue))
 } 
 
 export default userReducer
