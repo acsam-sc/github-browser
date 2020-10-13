@@ -1,25 +1,14 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 // import { Route } from 'react-router-dom'
 import Head from './head'
 import Main from './main'
 import Repositories from './repositories'
 import Repository from './repository'
-import { setRepoUrl, getRepositories, onUserFormSubmit } from '../redux/reducers/user-reducer'
-import { resetRepoState, getReadmeContent } from '../redux/reducers/repo-reducer'
+import { setRepoUrl, onUserFormSubmit } from '../redux/reducers/user-reducer'
 
 const Home = (props) => {
   console.log('Home props', props)
-
-  useEffect(() => {
-    if (props.username.length > 0) props.getRepositories(props.username)
-  }, [props.username])
-
-  useEffect(() => {
-    props.resetRepoState()
-    if (props.repoUrl) props.getReadmeContent(props.repoUrl)
-  }, [props.repoUrl])
-
 
   return (
     <div className="flex flex-row w-full min-h-full">
@@ -63,18 +52,15 @@ const mapStateToProps = (state) => {
     usernameError: state.userReducer.usernameError,
     reposArray: state.userReducer.reposArray,
     reposError: state.userReducer.reposError,
-    readmeContent: state.repoReducer.readmeContent,
-    hasNoReadme: state.repoReducer.hasNoReadme,
-    errorText: state.repoReducer.errorText
+    readmeContent: state.userReducer.readmeContent,
+    hasNoReadme: state.userReducer.hasNoReadme,
+    errorText: state.userReducer.errorText
   }
 }
 
 const mapDispatchToProps = {
   setRepoUrl,
-  resetRepoState,
-  getRepositories,
-  onUserFormSubmit,
-  getReadmeContent
+  onUserFormSubmit
 }
 
 export default React.memo(connect(mapStateToProps, mapDispatchToProps)(Home))

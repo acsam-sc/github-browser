@@ -8,10 +8,12 @@ const Main = ({ username, onUserFormSubmit, usernameError }) => {
 
   const onSubmit = (e) => {
     e.preventDefault()
-    if (usernameError !== 'Please enter username' && inputValue.length === 0 || inputValue !== username) {
-      onUserFormSubmit(inputValue, username)
+    if (
+      (usernameError !== 'Please enter username' && inputValue.length === 0) ||
+      inputValue !== username
+    ) {
+      onUserFormSubmit(inputValue)
     }
-    // if (inputValue.length > 0) onUserFormSubmit(inputValue, username)
   }
 
   return (

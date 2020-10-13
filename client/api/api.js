@@ -7,7 +7,7 @@ export const requestRepos = (username) => {
 
 export const requestReadmeUrl = (repoUrl) => {
   return axios.get(`${repoUrl}/readme`)
-} 
+}
 
 export const requestUrl = (url) => {
   return axios.get(url)
