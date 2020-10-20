@@ -27,4 +27,4 @@ const Repository = ({ errorText, hasNoReadme, repoUrl, readmeContent }) => {
   )
 }
 
-export default Repository
+export default React.memo(Repository)

@@ -1,10 +1,20 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 
 const Main = ({ username, onUserFormSubmit, usernameError }) => {
-  const [inputValue, setInputValue] = useState('')
+  console.log('Main', 'username=', username)
+
+  const { user, repo } = useParams()
+
+  const [inputValue, setInputValue] = useState(username)
   const handleInputChange = (e) => {
     setInputValue(e.target.value)
   }
+
+  useEffect(() => {
+    if (user && !username) onUserFormSubmit(user, repo)
+    setInputValue(username)
+  }, [username, user, repo, onUserFormSubmit])
 
   const onSubmit = (e) => {
     e.preventDefault()

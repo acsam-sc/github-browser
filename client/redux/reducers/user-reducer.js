@@ -20,7 +20,7 @@ const initialState = {
   errorText: null
 }
 
-const setUsername = (username) => ({ type: SET_USERNAME, payload: username })
+export const setUsername = (username) => ({ type: SET_USERNAME, payload: username })
 
 const setUsernameError = (usernameError) => ({ type: SET_USERNAME_ERROR, payload: usernameError })
 
@@ -85,52 +85,59 @@ const userReducer = (state = initialState, action) => {
   }
 }
 
-const getRepositories = (username) => async (dispatch) => {
-  try {
-    const response = await requestRepos(username)
-    // setErrorText(response.data[0].url)
-    if (response.data.length === 0) {
-      dispatch(setReposError(`${username} doesn’t have any public repositories yet`))
-    } else {
-      dispatch(setReposArray(response.data))
-    }
-  } catch (err) {
-    if (err.response.status === 404) {
-      dispatch(setUsernameError('No such user'))
-    } else {
-      dispatch(setErrorText(err.response.data.message))
-    }
-  }
-}
-
 const getReadmeContent = (repoUrl) => async (dispatch) => {
   try {
     const response = await requestReadmeUrl(repoUrl)
     const readmeContentResponse = await requestUrl(response.data.download_url)
     dispatch(setReadmeContent(readmeContentResponse.data))
   } catch (err) {
-    if (err.response.status === 404) {
+    if (err && err.response.status === 404) {
       dispatch(setHasNoReadme('This repository doesn’t have a README.MD'))
     } else {
-      dispatch(setErrorText(err.response.data.message))
+      dispatch(setErrorText(err.response.data.message || 'Error happenned'))
     }
-  }
-}
-
-export const onUserFormSubmit = (inputValue) => async (dispatch) => {
-  if (inputValue.length === 0) {
-    dispatch(setUsername(''))
-    dispatch(setUsernameError('Please enter username'))
-  } else {
-    console.log('onUserFormSubmit', inputValue)
-    dispatch(setUsername(inputValue))
-    dispatch(getRepositories(inputValue))
   }
 }
 
 export const setRepoUrl = (repoUrl) => (dispatch) => {
   dispatch({ type: SET_REPO_URL, payload: repoUrl })
   dispatch(getReadmeContent(repoUrl))
+}
+
+const getRepositories = (username, repo) => async (dispatch) => {
+  try {
+    const response = await requestRepos(username)
+    // setErrorText(response.data[0].url)
+    if (response.data.length === 0) {
+      dispatch(setReposError(`${username} doesn’t have any public repositories yet`))
+    } else {
+      const reposArray = response.data
+      dispatch(setReposArray(reposArray))
+      if (repo) {
+        const repoArrItem = reposArray.filter((it) => it.name === repo)
+        if (repoArrItem.length) {
+          dispatch(setRepoUrl(repoArrItem[0].url))
+        } else dispatch(setErrorText('This user have no such repository'))
+      }
+    }
+  } catch (err) {
+    if (err && err.response.status === 404) {
+      dispatch(setUsernameError('No such user'))
+    } else {
+      dispatch(setErrorText(err.response.data.message || 'Error happenned'))
+    }
+  }
+}
+
+export const onUserFormSubmit = (username, repo) => async (dispatch) => {
+  if (username.length === 0) {
+    dispatch(setUsername(''))
+    dispatch(setUsernameError('Please enter username'))
+  } else {
+    console.log('onUserFormSubmit', username, repo)
+    dispatch(setUsername(username))
+    dispatch(getRepositories(username, repo))
+  }
 }
 
 export default userReducer

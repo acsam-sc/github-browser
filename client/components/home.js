@@ -1,11 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
-// import { Route } from 'react-router-dom'
 import Head from './head'
 import Main from './main'
 import Repositories from './repositories'
 import Repository from './repository'
-import { setRepoUrl, onUserFormSubmit } from '../redux/reducers/user-reducer'
+import { setRepoUrl, onUserFormSubmit, setUsername } from '../redux/reducers/user-reducer'
 
 const Home = (props) => {
   console.log('Home props', props)
@@ -19,6 +18,7 @@ const Home = (props) => {
             onUserFormSubmit={props.onUserFormSubmit}
             usernameError={props.usernameError}
             username={props.username}
+            setUsername={props.setUsername}
           />
         </div>
         <div className="flex w-full flex-grow border-2 border-black">
@@ -60,7 +60,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   setRepoUrl,
-  onUserFormSubmit
+  onUserFormSubmit,
+  setUsername
 }
 
 export default React.memo(connect(mapStateToProps, mapDispatchToProps)(Home))

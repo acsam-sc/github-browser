@@ -1,6 +1,7 @@
 import React from 'react'
 
 const Repositories = ({ setRepoUrl, username, reposError, reposArray }) => {
+  console.log('repositories', 'username=', username)
   const urlList = reposArray.map((it) => {
     return (
       <div
@@ -26,4 +27,4 @@ const Repositories = ({ setRepoUrl, username, reposError, reposArray }) => {
   )
 }
 
-export default Repositories
+export default React.memo(Repositories)
