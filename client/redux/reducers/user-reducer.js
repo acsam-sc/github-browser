@@ -1,3 +1,4 @@
+import { history } from '..'
 import { requestRepos, requestReadmeUrl, requestUrl } from '../../api/api'
 
 const SET_USERNAME = 'github-browser/SET_USERNAME'
@@ -35,7 +36,6 @@ const setHasNoReadme = (hasNoReadme) => ({ type: SET_HAS_NO_README, payload: has
 const setErrorText = (errorText) => ({ type: SET_ERROR_TEXT, payload: errorText })
 
 const userReducer = (state = initialState, action) => {
-  console.log('userReducer', state, action)
   switch (action.type) {
     case SET_USERNAME: {
       return {
@@ -99,15 +99,15 @@ const getReadmeContent = (repoUrl) => async (dispatch) => {
   }
 }
 
-export const setRepoUrl = (repoUrl) => (dispatch) => {
+export const setRepoUrl = (repoUrl, repoName) => (dispatch) => {
   dispatch({ type: SET_REPO_URL, payload: repoUrl })
   dispatch(getReadmeContent(repoUrl))
+  history.push(repoName)
 }
 
 const getRepositories = (username, repo) => async (dispatch) => {
   try {
     const response = await requestRepos(username)
-    // setErrorText(response.data[0].url)
     if (response.data.length === 0) {
       dispatch(setReposError(`${username} doesn’t have any public repositories yet`))
     } else {
@@ -116,7 +116,7 @@ const getRepositories = (username, repo) => async (dispatch) => {
       if (repo) {
         const repoArrItem = reposArray.filter((it) => it.name === repo)
         if (repoArrItem.length) {
-          dispatch(setRepoUrl(repoArrItem[0].url))
+          dispatch(setRepoUrl(repoArrItem[0].url, `${username}/${repo}`))
         } else dispatch(setErrorText('This user have no such repository'))
       }
     }
@@ -133,10 +133,11 @@ export const onUserFormSubmit = (username, repo) => async (dispatch) => {
   if (username.length === 0) {
     dispatch(setUsername(''))
     dispatch(setUsernameError('Please enter username'))
+    history.push('/')
   } else {
-    console.log('onUserFormSubmit', username, repo)
     dispatch(setUsername(username))
     dispatch(getRepositories(username, repo))
+    history.push(`/${username}`)
   }
 }
 

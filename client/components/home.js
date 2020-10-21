@@ -7,8 +7,6 @@ import Repository from './repository'
 import { setRepoUrl, onUserFormSubmit, setUsername } from '../redux/reducers/user-reducer'
 
 const Home = (props) => {
-  console.log('Home props', props)
-
   return (
     <div className="flex flex-row w-full min-h-full">
       <Head title="Hello" />

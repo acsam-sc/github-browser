@@ -1,13 +1,12 @@
 import React from 'react'
 
 const Repositories = ({ setRepoUrl, username, reposError, reposArray }) => {
-  console.log('repositories', 'username=', username)
   const urlList = reposArray.map((it) => {
     return (
       <div
         key={it.id}
-        onClick={() => setRepoUrl(it.url)}
-        onKeyDown={() => setRepoUrl(it.url)}
+        onClick={() => setRepoUrl(it.url, `/${username}/${it.name}`)}
+        onKeyDown={() => setRepoUrl(it.url, `/${username}/${it.name}`)}
         tabIndex="0"
         role="link"
       >

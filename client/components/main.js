@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
 const Main = ({ username, onUserFormSubmit, usernameError }) => {
-  console.log('Main', 'username=', username)
-
   const { user, repo } = useParams()
 
   const [inputValue, setInputValue] = useState(username)
