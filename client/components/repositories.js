@@ -1,12 +1,15 @@
 import React from 'react'
 
-const Repositories = ({ setRepoUrl, username, reposError, reposArray }) => {
+const Repositories = ({ setRepoName, username, repoName, reposError, reposArray }) => {
   const urlList = reposArray.map((it) => {
     return (
       <div
+        className={it.name === repoName ? 'cursor-pointer font-bold' : 'cursor-pointer'}
         key={it.id}
-        onClick={() => setRepoUrl(it.url, `/${username}/${it.name}`)}
-        onKeyDown={() => setRepoUrl(it.url, `/${username}/${it.name}`)}
+        onClick={() => setRepoName(username, it.name)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') setRepoName(username, it.name)
+        }}
         tabIndex="0"
         role="link"
       >

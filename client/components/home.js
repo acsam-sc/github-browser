@@ -4,7 +4,7 @@ import Head from './head'
 import Main from './main'
 import Repositories from './repositories'
 import Repository from './repository'
-import { setRepoUrl, onUserFormSubmit, setUsername } from '../redux/reducers/user-reducer'
+import { setRepoName, onUserFormSubmit, setUsername } from '../redux/reducers/user-reducer'
 
 const Home = (props) => {
   return (
@@ -23,14 +23,16 @@ const Home = (props) => {
           <Repositories
             reposArray={props.reposArray}
             username={props.username}
-            setRepoUrl={props.setRepoUrl}
+            setRepoName={props.setRepoName}
             reposError={props.reposError}
+            repoName={props.repoName}
           />
         </div>
       </div>
       <div className="w-full">
         <Repository
-          repoUrl={props.repoUrl}
+          username={props.username}
+          repoName={props.repoName}
           errorText={props.errorText}
           hasNoReadme={props.hasNoReadme}
           readmeContent={props.readmeContent}
@@ -43,10 +45,9 @@ const Home = (props) => {
 Home.propTypes = {}
 
 const mapStateToProps = (state) => {
-  // console.log('state', state)
   return {
     username: state.userReducer.username,
-    repoUrl: state.userReducer.repoUrl,
+    repoName: state.userReducer.repoName,
     usernameError: state.userReducer.usernameError,
     reposArray: state.userReducer.reposArray,
     reposError: state.userReducer.reposError,
@@ -57,7 +58,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = {
-  setRepoUrl,
+  setRepoName,
   onUserFormSubmit,
   setUsername
 }

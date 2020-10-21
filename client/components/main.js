@@ -26,7 +26,7 @@ const Main = ({ username, onUserFormSubmit, usernameError }) => {
 
   return (
     <div className="m-10">
-      Welcome to GitHub README&#39;s Browser
+      GitHub README&#39;s Browser
       <div>
         <form onSubmit={onSubmit}>
           <input

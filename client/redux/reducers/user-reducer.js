@@ -2,7 +2,7 @@ import { history } from '..'
 import { requestRepos, requestReadmeUrl, requestUrl } from '../../api/api'
 
 const SET_USERNAME = 'github-browser/SET_USERNAME'
-const SET_REPO_URL = 'github-browser/SET_REPO_URL'
+const SET_REPO_NAME = 'github-browser/SET_REPO_NAME'
 const SET_USERNAME_ERROR = 'github-browser/SET_USERNAME_ERROR'
 const SET_REPOS_ARRAY = 'github-browser/SET_REPOS_ARRAY'
 const SET_REPOS_ERROR = 'github-browser/SET_REPOS_ERROR'
@@ -13,7 +13,7 @@ const SET_ERROR_TEXT = 'github-browser/SET_ERROR_TEXT'
 const initialState = {
   username: '',
   usernameError: null,
-  repoUrl: null,
+  repoName: null,
   reposArray: [],
   reposError: null,
   readmeContent: null,
@@ -40,20 +40,20 @@ const userReducer = (state = initialState, action) => {
     case SET_USERNAME: {
       return {
         ...state,
-        repoUrl: null,
+        repoName: null,
         usernameError: null,
         reposArray: [],
         reposError: null,
         username: action.payload
       }
     }
-    case SET_REPO_URL: {
+    case SET_REPO_NAME: {
       return {
         ...state,
         readmeContent: null,
         hasNoReadme: null,
         errorText: null,
-        repoUrl: action.payload
+        repoName: action.payload
       }
     }
     case SET_USERNAME_ERROR: {
@@ -85,9 +85,9 @@ const userReducer = (state = initialState, action) => {
   }
 }
 
-const getReadmeContent = (repoUrl) => async (dispatch) => {
+const getReadmeContent = (username, repoName) => async (dispatch) => {
   try {
-    const response = await requestReadmeUrl(repoUrl)
+    const response = await requestReadmeUrl(username, repoName)
     const readmeContentResponse = await requestUrl(response.data.download_url)
     dispatch(setReadmeContent(readmeContentResponse.data))
   } catch (err) {
@@ -99,13 +99,13 @@ const getReadmeContent = (repoUrl) => async (dispatch) => {
   }
 }
 
-export const setRepoUrl = (repoUrl, repoName) => (dispatch) => {
-  dispatch({ type: SET_REPO_URL, payload: repoUrl })
-  dispatch(getReadmeContent(repoUrl))
-  history.push(repoName)
+export const setRepoName = (username, repoName) => (dispatch) => {
+  dispatch({ type: SET_REPO_NAME, payload: repoName })
+  dispatch(getReadmeContent(username, repoName))
+  history.push(`/${username}/${repoName}`)
 }
 
-const getRepositories = (username, repo) => async (dispatch) => {
+const getRepositories = (username, repoName) => async (dispatch) => {
   try {
     const response = await requestRepos(username)
     if (response.data.length === 0) {
@@ -113,10 +113,10 @@ const getRepositories = (username, repo) => async (dispatch) => {
     } else {
       const reposArray = response.data
       dispatch(setReposArray(reposArray))
-      if (repo) {
-        const repoArrItem = reposArray.filter((it) => it.name === repo)
+      if (repoName) {
+        const repoArrItem = reposArray.filter((it) => it.name === repoName)
         if (repoArrItem.length) {
-          dispatch(setRepoUrl(repoArrItem[0].url, `${username}/${repo}`))
+          dispatch(setRepoName(username, repoName))
         } else dispatch(setErrorText('This user have no such repository'))
       }
     }
@@ -129,14 +129,14 @@ const getRepositories = (username, repo) => async (dispatch) => {
   }
 }
 
-export const onUserFormSubmit = (username, repo) => async (dispatch) => {
+export const onUserFormSubmit = (username, repoName) => async (dispatch) => {
   if (username.length === 0) {
     dispatch(setUsername(''))
     dispatch(setUsernameError('Please enter username'))
     history.push('/')
   } else {
     dispatch(setUsername(username))
-    dispatch(getRepositories(username, repo))
+    dispatch(getRepositories(username, repoName))
     history.push(`/${username}`)
   }
 }

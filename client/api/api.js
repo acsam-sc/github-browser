@@ -5,8 +5,8 @@ export const requestRepos = (username) => {
   return axios.get(url)
 }
 
-export const requestReadmeUrl = (repoUrl) => {
-  return axios.get(`${repoUrl}/readme`)
+export const requestReadmeUrl = (username, repoName) => {
+  return axios.get(`https://api.github.com/repos/${username}/${repoName}/readme`)
 }
 
 export const requestUrl = (url) => {
