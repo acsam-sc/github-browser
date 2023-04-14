@@ -1,6 +1,6 @@
 # Simple GitHub Browser of README.MDs
 
-Demo: https://github-md-browser.herokuapp.com/
+Demo: http://github-browser.acsam.cz/
 
 ## Quick start
 
