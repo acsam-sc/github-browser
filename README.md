@@ -1,8 +1,10 @@
 # Simple GitHub Browser of README.MDs
 
-Demo: http://github-browser.acsam.cz/
+Demo: https://github-browser.acsam.cz/
 
 ## Quick start
+
+To run this project please use Node.js v.12.22.12
 
 1. Clone this repo using:
   ```shell
